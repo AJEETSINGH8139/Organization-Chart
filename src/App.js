@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import jsonData from "./jsonData";
+import OrganizationalChart from "./components/OrganizationalChart";
 
 function App() {
+  const [zoomLevel, setZoomLevel] = useState(1);
+
+  const handleZoomIn = () => {
+    setZoomLevel(zoomLevel + 0.1);
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel(Math.max(0.1, zoomLevel - 0.1));
+  };
+
+  const employeeCounts = jsonData.map((item) => ({
+    manager: item.manager,
+    count: jsonData.filter((i) => i.manager === item.fullName).length,
+  }));
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="header">
+        <h1>Organizational Chart</h1>
+        <div className="zoom-controls">
+          <button className="button" onClick={handleZoomIn}>Zoom In</button>
+          <button className="button" onClick={handleZoomOut}>Zoom Out</button>
+        </div>
+      </div>
+      <OrganizationalChart
+        data={jsonData}
+        zoom={zoomLevel}
+        employeeCounts={employeeCounts}
+      />
     </div>
   );
 }
